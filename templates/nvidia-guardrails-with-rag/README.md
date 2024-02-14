@@ -89,7 +89,11 @@ If you want to add this to an existing project, you can just run:
 ```
 langchain app add nvidia-guardrails-with-RAG
 ``` -->
-
+Temporarily, since the code isn't merged, you have to install this template from source code. So clone this repository and checkout this branch.
+```
+git clone https://github.com/chantal-rose/langchain.git
+git checkout guardrails_template
+```
 To create a new LangChain project
 ```
 langchain app new my-app
