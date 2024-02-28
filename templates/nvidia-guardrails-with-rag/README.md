@@ -1,6 +1,6 @@
 # Guardrails Integration with LangChain Expression Language Template
 
-This example demonstrates integrating NeMo Guardrails with LangChain Expression Language Templates. Here we start of with a `nvidia-rag-canonical` from the LangChain [templates](https://github.com/langchain-ai/langchain/tree/master/templates/nvidia-rag-canonical) which performs RAG using Milvus Vector Store and NVIDIA Models, both embedding and Chat.
+This example demonstrates integrating NeMo Guardrails with LangChain Expression Language Templates, which performs RAG using Milvus Vector Store and NVIDIA Models, both embedding and Chat.
 
 ## Environmental Setup
 
@@ -30,16 +30,10 @@ export NGC_API_KEY=<your ngc_api_key>
 ```
 ### NeMo Guardrails
 
-To add guardrails, first you need to clone the nemoguardrails package with langchain runnable integrations as follows:
-
-Create a directory named `nemoguardrails`, clone and install the package with all necessary dependencies
+To add guardrails, first you need to install the nemoguardrails package with langchain runnable integrations as follows:
 
 ```
-mkdir nemoguardrails
-cd nemoguardrails
-git clone https://github.com/NVIDIA/NeMo-Guardrails.git
-cd NeMo-Guardrails
-pip install -e .
+pip install nemoguardrails
 ```
 
 ### Milvus Setup
@@ -77,10 +71,10 @@ pip install -U langchain-cli
 
 To use the NVIDIA models, install the langchain NVIDIA AI Endpoints package:
 ```
-pip install -U langchain_nvidia_aiplay  # deprecated
+pip install -U langchain_nvidia_aiplay
 ```
 
-<!-- To create a new LangChain project and install this as the only package, you can do:
+To create a new LangChain project and install this as the only package, you can do:
 ```
 langchain app new my-app --package nvidia-guardrails-with-RAG
 ```
@@ -88,21 +82,7 @@ langchain app new my-app --package nvidia-guardrails-with-RAG
 If you want to add this to an existing project, you can just run:
 ```
 langchain app add nvidia-guardrails-with-RAG
-``` -->
-Temporarily, since the code isn't merged, you have to install this template from source code. So clone this repository and checkout this branch.
 ```
-git clone https://github.com/chantal-rose/langchain.git
-git checkout guardrails_template
-```
-To create a new LangChain project
-```
-langchain app new my-app
-```
-Add this package:
-```
-langchain app add /path/to/this/template
-```
-Please note: Add the absolute path to the template (it should point to the directory where pyproject.toml is located)
 
 And add the following code to your `server.py` file:
 ```python
@@ -142,3 +122,22 @@ To add the guardrails, start with creating a config which consists of `config.ym
 "Question": "How many Americans receive Social Security Benefits?"
 "Answer": "According to the Social Security Administration, about 65 million Americans receive Social Security benefits."
 
+task: generate_intent_steps_message
+    content: |-
+      <extra_id_0>System
+      {{ general_instruction }}
+
+      {{ relevant_chunks }}
+
+      <extra_id_0>System
+
+
+      {{ examples | to_messages_nemollm}}
+
+      <extra_id_0>System
+
+      {{ sample_conversation | first_turns(1) | to_messages_nemollm }}{{ history | colang | to_messages_nemollm }}<extra_id_1>Assistant
+
+      User intent:
+
+    output_parser: "verbose_v1"

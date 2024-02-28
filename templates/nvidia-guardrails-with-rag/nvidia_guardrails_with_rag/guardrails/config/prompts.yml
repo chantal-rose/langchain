@@ -21,27 +21,7 @@ prompts:
       Answer: 
 
   - task: self_check_facts
-    content: |-
+    content: |
       You are given a task to identify if the hypothesis is grounded and entailed to the evidence.
       You will only use the contents of the evidence and not rely on external knowledge.
       Answer with yes/no. "evidence": {{ evidence }} "hypothesis": {{ response }} "entails":
-
-  - task: generate_intent_steps_message
-    content: |-
-      <extra_id_0>System
-      {{ general_instruction }}
-
-      {{ relevant_chunks }}
-
-      <extra_id_0>System
-
-
-      {{ examples | to_messages_nemollm}}
-
-      <extra_id_0>System
-
-      {{ sample_conversation | first_turns(1) | to_messages_nemollm }}{{ history | colang | to_messages_nemollm }}<extra_id_1>Assistant
-
-      User intent:
-
-    output_parser: "verbose_v1"

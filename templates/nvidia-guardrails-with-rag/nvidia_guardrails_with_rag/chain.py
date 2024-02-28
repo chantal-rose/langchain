@@ -52,10 +52,15 @@ guardrails = RunnableRails(config, input_key="question", output_key="answer", pa
 model = ChatNVIDIA(model=CHAT_MODEL)
 
 # Chain
-chain = (
+chain_without_guardrails = (
     {"context": retriever, "question": RunnablePassthrough()}
     | prompt
     | model
     | StrOutputParser()
 )
-chain = guardrails | chain
+
+chain = guardrails | chain_without_guardrails
+class Question(BaseModel):
+    __root__: str
+
+chain = chain.with_types(input_type=Question)
